@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]>=7.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = 'opal-fetcher-mongodb'
+authors = [
+    { name="Ionut Andrei Oanca", email="ia.oanca@treedom.net" },
+]
+description="An OPAL fetch provider to bring authorization state from MongoDB."
+readme = "README.md"
+keywords = [ "Open Policy Agent", "OPA", "OPAL", "Open Policy Administration Layer", "MongoDB", "Permit.io" ]
+requires-python = ">=3.7"
+license = {text = "Apache-2.0"}
+classifiers = [
+    'Operating System :: OS Independent',
+    'License :: OSI Approved :: Apache Software License',
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+]
+dependencies = [
+    'opal-common>=0.1.11',
+    'pymongo',
+    'motor',
+    "pydantic",
+    'tenacity',
+    'click',
+]
+dynamic = ["version"]
+
+[project.urls]
+"Source" = "https://github.com/treedomtrees/opal-fetcher-mongodb"
+"Bug Tracker" = "https://github.com/treedomtrees/opal-fetcher-mongodb/issues"
+
+[tool.setuptools_scm]
