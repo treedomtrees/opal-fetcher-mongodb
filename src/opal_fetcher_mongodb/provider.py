@@ -222,8 +222,8 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 logger.error(f"{self.__class__.__name__} error executing findOne query")
                 logger.error(message)
 
-                # TODO: maybe pass along the exception?
-                return []
+                # pass along the original exception
+                raise e
 
         if self._event.config.find is not None:
             logger.debug(f"{self.__class__.__name__} executing find query")
@@ -269,8 +269,8 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 logger.error(f"{self.__class__.__name__} error executing find query")
                 logger.error(message)
 
-                # TODO: maybe pass along the exception?
-                return []
+                # pass along the original exception
+                raise e
 
         if self._event.config.aggregate is not None:
             logger.debug(f"{self.__class__.__name__} executing aggregation pipeline")
@@ -311,8 +311,8 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 logger.error(f"{self.__class__.__name__} error executing aggregation pipeline")
                 logger.error(message)
 
-                # TODO: maybe pass along the exception?
-                return []
+                # pass along the original exception
+                raise e
 
     async def _process_(self, records: List[dict]):
         self._event: MongoDBFetchEvent # type casting
