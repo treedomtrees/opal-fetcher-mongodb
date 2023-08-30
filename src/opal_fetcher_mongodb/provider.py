@@ -47,8 +47,9 @@ class MongoDBTransformParams(BaseModel):
     Params that specify how the result from a MongoDB query should be transformed.
     """
 
-    first: bool = Field(False, description="whether to return only the first document, used only by find and aggregate")
+    first: Optional[bool] = Field(False, description="whether to return only the first document, used only by find and aggregate")
     mapKey: Optional[str] = Field(None, description="transform the array of documents to an object, using the specified key as the object key, used only by find and aggregate")
+    merge: Optional[bool] = Field(False, description="merge the resulting array of documents into a single object, duplicated keys will be overwritten sequentially, used only by find and aggregate")
 
 
 class MongoDBFetcherConfig(FetcherConfig):
@@ -221,8 +222,8 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 logger.error(f"{self.__class__.__name__} error executing findOne query")
                 logger.error(message)
 
-                # TODO: maybe pass along the exception?
-                return []
+                # pass along the original exception
+                raise e
 
         if self._event.config.find is not None:
             logger.debug(f"{self.__class__.__name__} executing find query")
@@ -268,8 +269,8 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 logger.error(f"{self.__class__.__name__} error executing find query")
                 logger.error(message)
 
-                # TODO: maybe pass along the exception?
-                return []
+                # pass along the original exception
+                raise e
 
         if self._event.config.aggregate is not None:
             logger.debug(f"{self.__class__.__name__} executing aggregation pipeline")
@@ -310,11 +311,13 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 logger.error(f"{self.__class__.__name__} error executing aggregation pipeline")
                 logger.error(message)
 
-                # TODO: maybe pass along the exception?
-                return []
+                # pass along the original exception
+                raise e
 
     async def _process_(self, records: List[dict]):
         self._event: MongoDBFetchEvent # type casting
+
+        # TODO: make sure that only one single transform is defined
 
         # handle findOne
         if self._event.config.findOne is not None:
@@ -337,6 +340,12 @@ class MongoDBFetchProvider(BaseFetchProvider):
         else:
             mapKey = None
 
+        # define merge option
+        if self._event.config.transform is not None:
+            merge = self._event.config.transform.merge
+            if merge is None:
+                merge = False
+
         # handle one single document
         if first:
             if records and len(records) > 0 and records[0] is not None:
@@ -344,6 +353,17 @@ class MongoDBFetchProvider(BaseFetchProvider):
             else:
                 return {}
 
+        # handle merge
+        if merge:
+            # transform the array of documents to a single object, duplicated keys will be overwritten sequentially
+            document = {}
+
+            for record in records:
+                document.update(record)
+
+            return document
+
+        # handle mapKey
         if mapKey is not None:
             # transform the array of documents to an object, using the specified key as the object key
             document = {}
@@ -352,6 +372,6 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 document[record[mapKey]] = record
 
             return document
-        else:
-            # handle multiple documents
-            return [dict(record) for record in records]
+
+        # handle multiple documents
+        return [dict(record) for record in records]
