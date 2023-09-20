@@ -327,24 +327,19 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 return {}
 
         # define first option
+        first = False
         if self._event.config.transform is not None:
             first = self._event.config.transform.first
-            if first is None:
-                first = False
-        else:
-            first = False
 
         # define mapKey option
+        mapKey = None
         if self._event.config.transform is not None:
             mapKey = self._event.config.transform.mapKey
-        else:
-            mapKey = None
 
         # define merge option
+        merge = False
         if self._event.config.transform is not None:
             merge = self._event.config.transform.merge
-            if merge is None:
-                merge = False
 
         # handle one single document
         if first:
