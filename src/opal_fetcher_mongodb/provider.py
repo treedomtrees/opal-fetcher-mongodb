@@ -86,7 +86,7 @@ class MongoDBFetcherConfig(FetcherConfig):
 class MongoDBFetchEvent(FetchEvent):
     """
     A FetchEvent shape for the MongoDB Fetch Provider.
-   """
+    """
 
     fetcher: str = "MongoDBFetchProvider"
     config: MongoDBFetcherConfig = None
@@ -327,46 +327,56 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 return {}
 
         # define first option
-        first = False
         if self._event.config.transform is not None:
             first = self._event.config.transform.first
+            if first is None:
+                first = False
+        else:
+            first = False
 
         # define mapKey option
-        mapKey = None
         if self._event.config.transform is not None:
             mapKey = self._event.config.transform.mapKey
+        else:
+            mapKey = None
 
         # define merge option
-        merge = False
         if self._event.config.transform is not None:
             merge = self._event.config.transform.merge
+            if merge is None:
+                merge = False
 
         # handle one single document
+        result = None
         if first:
             if records and len(records) > 0 and records[0] is not None:
-                return dict(records[0])
+                result = dict(records[0])
             else:
-                return {}
+                result = {}
 
         # handle merge
-        if merge:
+        elif merge:
             # transform the array of documents to a single object, duplicated keys will be overwritten sequentially
             document = {}
 
             for record in records:
-                document.update(record)
+                document.update(dict(record))
 
-            return document
+            result = document
 
         # handle mapKey
-        if mapKey is not None:
+        elif mapKey is not None:
             # transform the array of documents to an object, using the specified key as the object key
             document = {}
 
             for record in records:
-                document[record[mapKey]] = record
+                document[record[mapKey]] = dict(record)
 
-            return document
+            result = document
 
-        # handle multiple documents
-        return [dict(record) for record in records]
+        else:
+            # handle multiple documents
+            result = [dict(record) for record in records]
+
+        return result
+
