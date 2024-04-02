@@ -9,6 +9,10 @@ OPAL Fetcher for MongoDB
 Made with ❤️ at <a href="https://treedom.net"><img src="https://i.ibb.co/QfYVtP5/Treedom-logo.png" height="24" alt="opal" border="0" /></a>
 </h4>
 
+<h6 align="center">
+<a href="https://www.treedom.net/it/organization/treedom/event/treedom-open-source"><img src="https://badges.treedom.net/badge/f/treedom-open-source" alt="opal" border="0" /></a>
+</h6>
+
 [Check out OPAL main repo here.](https://github.com/permitio/opal)
 
 
@@ -87,44 +91,14 @@ Values for this fetcher config:
 * Your `config` may include the `transform` key to transform the results from the `find` or `aggregate` queries.
 
 #### Query methods
-All the three available query methods allow the same input parameters as defined in the MongoDB docs
+All the three available query methods accept the same input parameters as defined in the MongoDB documentation.
 
-* `find` - [MongoDB docs](https://docs.mongodb.com/manual/reference/method/db.collection.find/)
-
-<details>
-    <summary>Example configuration</summary>
-
-```json
-{
-  "config": {
-    "entries": [
-      {
-        ...
-        "config": {
-          ...
-          "findOne": { 
-            "query": { 
-              ... 
-            },
-            "projection": { 
-              ... 
-            },
-            "options": { 
-              ... 
-            }
-          }
-        }
-      }
-    ]
-  }
-}
-```
-</details>
+##### findOne
 
 * `findOne` - [MongoDB docs](https://docs.mongodb.com/manual/reference/method/db.collection.findOne/)
 
 <details>
-    <summary>Example configuration</summary>
+  <summary>Example configuration</summary>
 
 ```json
 {
@@ -134,20 +108,16 @@ All the three available query methods allow the same input parameters as defined
         ...
         "config": {
           ...
-          "find": { 
-            "query": { 
-              ... 
+          "findOne": {
+            "query": {
+              ...
             },
-            "projection": { 
-              ... 
+            "projection": {
+              ...
             },
-            "options": { 
-              ... 
+            "options": {
+              ...
             }
-          },
-          "transform": {
-            "first": false,
-            "mapKey": ""
           }
         }
       }
@@ -157,10 +127,51 @@ All the three available query methods allow the same input parameters as defined
 ```
 </details>
 
+##### find
+
+* `find` - [MongoDB docs](https://docs.mongodb.com/manual/reference/method/db.collection.find/)
+
+<details>
+  <summary>Example configuration</summary>
+
+```json
+{
+  "config": {
+    "entries": [
+      {
+        ...
+        "config": {
+          ...
+          "find": {
+            "query": {
+              ...
+            },
+            "projection": {
+              ...
+            },
+            "options": {
+              ...
+            }
+          },
+          "transform": {
+            "first": false,
+            "mapKey": "",
+            "merge": true
+          }
+        }
+      }
+    ]
+  }
+}
+```
+</details>
+
+##### aggregate
+
 * `aggregate` - [MongoDB docs](https://docs.mongodb.com/manual/reference/method/db.collection.aggregate/)
 
 <details>
-    <summary>Example configuration</summary>
+  <summary>Example configuration</summary>
 
 ```json
 {
@@ -196,7 +207,34 @@ All the three available query methods allow the same input parameters as defined
 ##### first
 `transform.first` allows you to return only the first result from the query.
 
+Equivalent to the following Python code:
+
+```python
+result = query_result[0]
+```
+
 ##### mapKey
 `transform.mapKey` allows you to map the original list-like result to a dictionary-like result using the property specified in the `mapKey` as the key for the dictionary.
 
-> Only properties in the root of the document can be used as the key for the dictionary
+Equivalent to the following Python code:
+
+```python
+result = {}
+for item in query_result:
+    result[item['key']] = item
+```
+
+> Only properties in the root of the document can be used as the key for the dictionary.
+
+##### merge
+
+`transform.merge` allows you to merge the results from the query into a single document. Duplicate keys will be overwritten by the last document in the list.
+
+Equivalent to the following Python code:
+
+```python
+result = {}
+for item in query_result:
+    for key, value in item.items():
+        result[key] = value
+```

@@ -86,7 +86,7 @@ class MongoDBFetcherConfig(FetcherConfig):
 class MongoDBFetchEvent(FetchEvent):
     """
     A FetchEvent shape for the MongoDB Fetch Provider.
-   """
+    """
 
     fetcher: str = "MongoDBFetchProvider"
     config: MongoDBFetcherConfig = None
@@ -319,54 +319,73 @@ class MongoDBFetchProvider(BaseFetchProvider):
 
         # TODO: make sure that only one single transform is defined
 
-        # handle findOne
-        if self._event.config.findOne is not None:
-            if records and len(records) > 0 and records[0] is not None:
-                return dict(records[0])
+        try:
+            # handle findOne
+            if self._event.config.findOne is not None:
+                if records and len(records) > 0 and records[0] is not None:
+                    return dict(records[0])
+                else:
+                    return {}
+
+            # define first option
+            if self._event.config.transform is not None:
+                first = self._event.config.transform.first
+                if first is None:
+                    first = False
             else:
-                return {}
+                first = False
 
-        # define first option
-        first = False
-        if self._event.config.transform is not None:
-            first = self._event.config.transform.first
-
-        # define mapKey option
-        mapKey = None
-        if self._event.config.transform is not None:
-            mapKey = self._event.config.transform.mapKey
-
-        # define merge option
-        merge = False
-        if self._event.config.transform is not None:
-            merge = self._event.config.transform.merge
-
-        # handle one single document
-        if first:
-            if records and len(records) > 0 and records[0] is not None:
-                return dict(records[0])
+            # define mapKey option
+            if self._event.config.transform is not None:
+                mapKey = self._event.config.transform.mapKey
             else:
-                return {}
+                mapKey = None
 
-        # handle merge
-        if merge:
-            # transform the array of documents to a single object, duplicated keys will be overwritten sequentially
-            document = {}
+            # define merge option
+            if self._event.config.transform is not None:
+                merge = self._event.config.transform.merge
+                if merge is None:
+                    merge = False
 
-            for record in records:
-                document.update(record)
+            # handle one single document
+            result = None
+            if first:
+                if records and len(records) > 0 and records[0] is not None:
+                    result = dict(records[0])
+                else:
+                    result = {}
 
-            return document
+            # handle merge
+            elif merge:
+                # transform the array of documents to a single object, duplicated keys will be overwritten sequentially
+                document = {}
 
-        # handle mapKey
-        if mapKey is not None:
-            # transform the array of documents to an object, using the specified key as the object key
-            document = {}
+                for record in records:
+                    document.update(dict(record))
 
-            for record in records:
-                document[record[mapKey]] = record
+                result = document
 
-            return document
+            # handle mapKey
+            elif mapKey is not None:
+                # transform the array of documents to an object, using the specified key as the object key
+                document = {}
 
-        # handle multiple documents
-        return [dict(record) for record in records]
+                for record in records:
+                    document[record[mapKey]] = dict(record)
+
+                result = document
+
+            else:
+                # handle multiple documents
+                result = [dict(record) for record in records]
+
+            return result
+        except Exception as e:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(e).__name__, e.args)
+
+            logger.error(f"{self.__class__.__name__} error processing records")
+            logger.error(message)
+
+            # pass along the original exception
+            raise e
