@@ -3,7 +3,8 @@ requires = ["setuptools>=61.0", "setuptools_scm[toml]>=7.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = 'opal-fetcher-mongodb'
+name = 'opal-fetcher-mongodb-treedom'
+version = "0.0.1"
 authors = [
     { name="Ionut Andrei Oanca", email="ia.oanca@treedom.net" },
 ]
@@ -30,7 +31,6 @@ dependencies = [
     'tenacity',
     'click',
 ]
-dynamic = ["version"]
 
 [project.urls]
 "Source" = "https://github.com/treedomtrees/opal-fetcher-mongodb"

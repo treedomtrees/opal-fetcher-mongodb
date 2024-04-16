@@ -6,11 +6,11 @@ OPAL Fetcher for MongoDB
 </h2>
 
 <h4 align="center">
-Made with ❤️ at <a href="https://treedom.net"><img src="https://i.ibb.co/QfYVtP5/Treedom-logo.png" height="24" alt="opal" border="0" /></a>
+Made with ❤️ at <a href="https://treedom.net"><img src="https://i.ibb.co/QfYVtP5/Treedom-logo.png" height="24" alt="treedom" border="0" /></a>
 </h4>
 
 <h6 align="center">
-<a href="https://www.treedom.net/it/organization/treedom/event/treedom-open-source"><img src="https://badges.treedom.net/badge/f/treedom-open-source" alt="opal" border="0" /></a>
+<a href="https://www.treedom.net/it/organization/treedom/event/treedom-open-source"><img src="https://badges.treedom.net/badge/f/treedom-open-source" alt="plant-a-tree" border="0" /></a>
 </h6>
 
 [Check out OPAL main repo here.](https://github.com/permitio/opal)
@@ -36,7 +36,7 @@ The official docker image only contains the built-in fetch providers. You need t
 Your `Dockerfile` should look like this:
 ```
 FROM permitio/opal-client:latest
-RUN pip install --no-cache-dir --user opal-fetcher-mongodb
+RUN pip install --no-cache-dir --user opal-fetcher-mongodb-treedom
 ```
 
 #### 2) Build your custom opal-client container
