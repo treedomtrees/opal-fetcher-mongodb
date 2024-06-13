@@ -36,7 +36,7 @@ The official docker image only contains the built-in fetch providers. You need t
 Your `Dockerfile` should look like this:
 ```
 FROM permitio/opal-client:latest
-RUN pip install --no-cache-dir --user opal-fetcher-mongodb-treedom
+RUN pip install --no-cache-dir --user opal-fetcher-mongodb
 ```
 
 #### 2) Build your custom opal-client container
