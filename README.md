@@ -6,7 +6,7 @@ OPAL Fetcher for MongoDB
 </h2>
 
 <h4 align="center">
-Made with ❤️ at <a href="https://treedom.net"><img src="https://i.ibb.co/QfYVtP5/Treedom-logo.png" height="24" alt="treedom" border="0" /></a>
+Made with ❤️ at <a href="https://treedom.net"><img src="https://i.ibb.co/QfYVtP5/Treedom-logo.png" height="24" alt="treedom" border="0" /></a>, <a href="#-join-us-in-making-a-difference-">join us in making a difference</a>!
 </h4>
 
 <h6 align="center">
@@ -238,3 +238,11 @@ for item in query_result:
     for key, value in item.items():
         result[key] = value
 ```
+
+## 🌳 Join Us in Making a Difference! 🌳
+
+We invite all developers who use Treedom's open-source code to support our mission of sustainability by planting a tree with us. By contributing to reforestation efforts, you help create a healthier planet and give back to the environment. Visit our [Treedom Open Source Forest](https://www.treedom.net/en/organization/treedom/event/treedom-open-source) to plant your tree today and join our community of eco-conscious developers.
+
+Additionally, you can integrate the Treedom GitHub badge into your repository to showcase the number of trees in your Treedom forest and encourage others to plant new ones. Check out our [integration guide](https://github.com/treedomtrees/.github/blob/main/profile/README.md) to get started.
+
+Together, we can make a lasting impact! 🌍💚
