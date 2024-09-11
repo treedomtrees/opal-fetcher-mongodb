@@ -40,7 +40,7 @@ services:
       - '5438:5432'
   opal_server:
     # by default we run opal-server from latest official image
-    image: authorizon/opal-server:latest
+    image: permitio/opal-server:latest
     environment:
       # the broadcast backbone uri used by opal server workers (see comments above for: broadcast_channel)
       - OPAL_BROADCAST_URI=postgres://postgres:postgres@broadcast_channel:5432/postgres
