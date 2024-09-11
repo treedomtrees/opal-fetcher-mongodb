@@ -346,6 +346,8 @@ class MongoDBFetchProvider(BaseFetchProvider):
                 merge = self._event.config.transform.merge
                 if merge is None:
                     merge = False
+            else:
+                merge = False
 
             # handle one single document
             result = None
