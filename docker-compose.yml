@@ -59,7 +59,7 @@ services:
       # the data sources represents from where the opal clients should get a "complete picture" of the data they need.
       # after the initial sources are fetched, the client will subscribe only to update notifications sent by the server.
       # Add "fetch_key":"city_id" to get an object with keys of city_id, rather than a list
-      - OPAL_DATA_CONFIG_SOURCES={"config":{"entries":[{"url":"mongodb://user:password@mongodb/test_database?authSource=admin","config":{"fetcher":"MongoDBFetchProvider","database":"opal_fetcher_mongodb","collection":"cities_collection","find":{"query":{}}},"topics":["policy_data"],"dst_path":"cities"}]}}
+      - OPAL_DATA_CONFIG_SOURCES={"config":{"entries":[{"url":"mongodb://user:password@mongodb/test_database?authSource=admin&directConnection=true","config":{"fetcher":"MongoDBFetchProvider","database":"opal_fetcher_mongodb","collection":"cities_collection","find":{"query":{}}},"topics":["policy_data"],"dst_path":"cities"}]}}
     ports:
       # exposes opal server on the host machine, you can access the server at: http://localhost:7002
       - "7002:7002"
